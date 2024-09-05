@@ -1,3 +1,5 @@
+from src.initiate import *
+
 class SemanticNetsAgent:
     def __init__(self):
         #If you want to do any initial processing, add it here.
@@ -13,5 +15,21 @@ class SemanticNetsAgent:
         #If it is impossible to move the animals over according
         #to the rules of the problem, return an empty list of
         #moves.
-        pass
+
+
+        #problem setup
+        decision_tree = DecisionTree(value=0)
+        bank_instance_left = decision_tree.bank_instance_left
+        for sheep in range(initial_sheep):
+            bank_instance_left.add_sheep(objects.Sheep)
+        for wolf in range(initial_wolves):
+            bank_instance_left.add_wolf(objects.Wolf)
+
+        # run all states until all either solve/ fail or for a max depth
+
+
+
+
+        #TODO: proper return
+        return []
 

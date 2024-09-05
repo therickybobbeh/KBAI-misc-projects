@@ -1,3 +1,3 @@
-# rams can not be less than wolfs
+# sheep can not be less than wolfs
 
-# boat must be on bank side for ram to move
+# boat must be on bank side for sheep to move

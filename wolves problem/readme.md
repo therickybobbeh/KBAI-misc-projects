@@ -2,7 +2,7 @@ Mini-Project 1: Sheep & Wolves
 In this mini-project, you’ll implement an agent that can solve the Sheep and Wolves problem for an arbitrary number of initial wolves and sheep. You will submit the code for solving the problem to the Mini-Project 1 assignment in Gradescope. You will also submit a report describing your agent to Canvas. Your grade will be based on a combination of your report (50%) and your agent’s performance (50%).
 
 About the Project
-The Sheep and Wolves problem is identical to the Guards & Prisoners problem from the lecture, except that it makes more semantic sense why the wolves can be alone (they have no sheep to eat). Ignore for a moment the absurdity of wolves needing to outnumber sheep in order to overpower them. Maybe it’s baby wolves vs. adult rams.
+The Sheep and Wolves problem is identical to the Guards & Prisoners problem from the lecture, except that it makes more semantic sense why the wolves can be alone (they have no sheep to eat). Ignore for a moment the absurdity of wolves needing to outnumber sheep in order to overpower them. Maybe it’s baby wolves vs. adult sheep.
 
 As a reminder, the problem goes like this: you are a shepherd tasked with getting sheep and wolves across a river for some reason. If the wolves ever outnumber the sheep on either side of the river, the wolves will overpower and eat the sheep. You have a boat, which can only take one or two animals in it at a time, and must have at least one animal in it because you’ll get lonely (and because the problem is trivial otherwise). How do you move all the animals from one side of the river to the other?
 
@@ -18,7 +18,7 @@ Here is your starter code: SemanticNetsAgent.zip.
 
 The starter code contains two files: SemanticNetsAgent.py and main.py. You will write your agent in SemanticNetsAgent.py. You may test your agent by running main.py. You will only submit SemanticNetsAgent.py; you may modify main.py to test your agent with different inputs.
 
-In SemanticNetsAgent.py, your solve() method will have two parameters: the number of sheep and the number of wolves. For example, for the original Sheep & Wolves problem from the lectures, we would call your agent with your_agent.solve(3, 3). You may assume that the initial state is valid (there will not be more Wolves than Sheep in the initial state).
+In SemanticNetsAgent.py, your solve() method will have two pasheepeters: the number of sheep and the number of wolves. For example, for the original Sheep & Wolves problem from the lectures, we would call your agent with your_agent.solve(3, 3). You may assume that the initial state is valid (there will not be more Wolves than Sheep in the initial state).
 
 Returning Your Solution
 Your solve() method should return a list of moves that will result in the successful solving of the problem. These are only the moves your agent ultimately selected to be performed, not the entire web of possible moves. Each item in the list should be a 2-tuple where each value is an integer representing the number of sheep (the first integer) or wolves (the second integer) to be moved; we assume the moves are alternating. So, if your first move is (1, 1), that means you’re moving one sheep and one wolf to the right. If your second move is (0, 1), that means you’re moving one wolf to the left.
