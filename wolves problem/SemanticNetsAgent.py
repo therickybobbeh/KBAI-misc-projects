@@ -1,4 +1,6 @@
-from src.initiate import *
+from src.decision_tree import *
+from src.node import Node
+
 
 class SemanticNetsAgent:
     def __init__(self):
@@ -17,19 +19,28 @@ class SemanticNetsAgent:
         #moves.
 
 
-        #problem setup
-        decision_tree = DecisionTree(value=0)
-        bank_instance_left = decision_tree.bank_instance_left
-        for sheep in range(initial_sheep):
-            bank_instance_left.add_sheep(objects.Sheep)
-        for wolf in range(initial_wolves):
-            bank_instance_left.add_wolf(objects.Wolf)
 
-        # run all states until all either solve/ fail or for a max depth
+        #change this to initiate node
+
+        #pass root node to decision tree
+
+
+        #problem setup, add sheep and wolves to left bank, add a boat
+        root_node = Node()
+        for sheep in range(initial_sheep):
+            root_node.bank_instance_left.set_sheep_count(initial_sheep)
+        for wolf in range(initial_wolves):
+            root_node.bank_instance_left.set_wolf_count(initial_wolves)
+        root_node.bank_instance_left.add_boat()
+
+        # make this return the tuple or whatever
+        decision_tree =  DecisionTree(root_node)
+        return decision_tree.run_actions_on_nodes()
+
 
 
 
 
         #TODO: proper return
-        return []
+        # return []
 
