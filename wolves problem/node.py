@@ -1,11 +1,11 @@
 import copy
-from src import objects as objects
+import objects as objects
 
 
 class Node:
-    def __init__(self, depth, leaves=None, parent: 'Node' = None,
-                 actions_ran=0, solved=False, exhausted=False, bank_left=objects.Bank,
-                 bank_right=objects.Bank, boat=objects.Boat, back_and_fourth = []):
+    def __init__(self, depth=0, leaves=None, parent: 'Node' = None,
+                 actions_ran=0, solved=False, exhausted=False, bank_left=None,
+                 bank_right=None, boat=None, back_and_fourth=[]):
         if leaves is None:
             leaves = []
         self.depth: int = depth
@@ -17,6 +17,13 @@ class Node:
         # (x,y) where x is sheep and y is wolf
         self.back_and_fourth = back_and_fourth
 
+        if bank_left is None:
+            bank_left = objects.Bank()
+        if bank_right is None:
+            bank_right = objects.Bank()
+        if boat is None:
+            boat = objects.Boat()
+
         self.bank_instance_left = bank_left
         self.bank_instance_right = bank_right
         self.boat_instance = boat
@@ -26,6 +33,7 @@ class Node:
         leaf.parent = self
         self.leaves.append(leaf)
         leaf.depth = self.depth + 1
+        leaf.actions_ran = 0
         return leaf
 
     def get_parent_node(self):
