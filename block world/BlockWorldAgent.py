@@ -1,3 +1,6 @@
+from Tree import Tree
+from Node import Node
+
 class BlockWorldAgent:
     def __init__(self):
         #If you want to do any initial processing, add it here.
@@ -29,6 +32,15 @@ class BlockWorldAgent:
 		#("C", "Table")
 		#("B", "E")
 		#("C", "A")
+
+        # intiialze the tree and pass the initial arrangement and goal
+        tree = Tree(initial_arrangement, goal_arrangement)
+        tree.solve()
+
+
+
+
+
         pass
 
 
