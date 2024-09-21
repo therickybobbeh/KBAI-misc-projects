@@ -6,13 +6,67 @@ class Actions:
     def __init__(self):
         pass
 
-    def run_actions_on_node(self, node: Node):
-        # run all actions
-            # place on each stack and check if it meets subgoal ( only if subgoal decomplicates it)
-            # place on table ( this should eventually place all on table? )
+    #TODO: fix the references to the child nodes and parent nodes
+    # fix the logic as well for poping and placing
+
+    # start actions block
+    @staticmethod
+    def pop_off_top_and_place_on_stack(node: Node, from_stack_index: int, to_stack_index: int) -> Node:
+        if not node.table_state[from_stack_index]:
+            return None
+        new_state = deepcopy(node.table_state)
+        element = new_state[from_stack_index].pop()
+        new_state[to_stack_index].append(element)
+        return Node(parent=node, table_state=new_state)
+
+    @staticmethod
+    def pop_off_top_and_place_on_table(node: Node, from_stack_index: int) -> Node:
+        if not node.table_state[from_stack_index]:
+            return None
+        new_state = deepcopy(node.table_state)
+        element = new_state[from_stack_index].pop()
+        new_state.append([element])
+        return Node(parent=node, table_state=new_state)
+
+    #end actions
+
+    # start rules block
+
+    @staticmethod
+    def check_does_not_equal_prior_nodes(node: Node):
+        current_node: Node | None = node.parent
+        # check the parent until there is no parent
+        while current_node is not None:
+            if node == current_node:
+                return False
+            current_node = current_node.parent
+        return True
 
 
 
-        # after each action run the rules for this set, this should set the ones that violate to true
-        # for the node.failed_state
-        pass
+    # TODO: may need something to make sure it doesnt try to do some stuff with blocks of 1 stack
+
+    # end rules block
+
+    @staticmethod
+    def calculate_similarity_to_goal_state(node: Node, goal_state: Node) -> int:
+        total_similarity = 0
+        initial_state = node.table_state
+        goal_state_list = goal_state.table_state
+
+        # Loop through each sublist in the initial state
+        for init_sublist in initial_state:
+            max_similarity = 0
+            # Compare the sublist to each sublist in the goal state
+            for goal_sublist in goal_state_list:
+                similarity = 0
+                # Compare elements in position until a mismatch is found
+                for i, el in enumerate(init_sublist):
+                    if i >= len(goal_sublist) or el != goal_sublist[i]:
+                        break  # Stop when we find the first mismatch
+                    similarity += 1  # Add to similarity for matching elements
+                max_similarity = max(max_similarity, similarity)
+            # Add the maximum similarity for this sublist to the total
+            total_similarity += max_similarity
+
+        return total_similarity

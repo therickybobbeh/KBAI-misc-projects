@@ -33,14 +33,16 @@ class BlockWorldAgent:
 		#("B", "E")
 		#("C", "A")
 
-        # intiialze the tree and pass the initial arrangement and goal
-        tree = Tree(initial_arrangement, goal_arrangement)
-        tree.solve()
+        # intiialze the nodes, tree and pass the initial arrangement and goal
+        root_node = Node(table_state=initial_arrangement)
+        goal_node = Node(table_state=goal_arrangement)
+        tree = Tree(root_node, goal_node)
+        return tree.solve()
 
 
 
 
 
-        pass
+        # pass
 
 

@@ -1,40 +1,66 @@
 from Node import Node
+from Actions import Actions
+from copy import deepcopy
 
 class Tree:
 
     def __init__(self, root_node: Node, goal_node: Node):
         # make the root node and whatnot, root
         self.root_node: Node = root_node
-        self.current_node: Node = root_node
+
         self.goal_node: Node = goal_node
         self.optimal_path = []
         # self.tree = []
 
-
+        self.root_node.similarity = Actions.calculate_similarity_to_goal_state(self.root_node, self.goal_node)
         ## max depth on the trees should be the number of the elements in the list times 2 plus some number
+        self.current_node: Node = root_node
+        # may not need
+        self.goal_node.similarity = count = sum(len(sublist) for sublist in self.goal_node.table_state)
 
 
     def solve(self):
         self.generate_tree(self.root_node)
+        self.print_tree(self.root_node)
         return self.determine_optimal_path()
 
 
-    def generate_tree(self, root_node: Node):
-        #TODO: needs work
+    # this only generates the tree, and sets the failed states appropriately
+    def generate_tree(self, node: Node):
+        if node == self.goal_node:
+            node.solved = True
+            return True
 
-        # first place the root node in the tree
-        # then generate by running all action
-        #
+        for selected_stack_index, stack in enumerate(node.table_state):
+            for other_stack_index in range(len(node.table_state)):
+                if selected_stack_index != other_stack_index:
+                    child_node = Actions.pop_off_top_and_place_on_stack(node, selected_stack_index, other_stack_index)
+                    if self.check_child_node_after_action(child_node, node):
+                        return True
 
-        # then run all rules
-            #check if each stack top it can be placed on top of another stack
-            # if not place on the table
+            # Move top block to the table
+            child_node = Actions.pop_off_top_and_place_on_table(node, selected_stack_index)
+            if self.check_child_node_after_action(child_node, node):
+                return True
 
-        # see if any child has the failed state set to false, if so make that the active node
-        # else: set it to the parent node until a child node has the state of false and the node does not equal
-        # the solved state.
-        # if the current node equals the root end the recursion
-        pass
+        node.failed_state = True
+        return False
+
+    def check_child_node_after_action(self, child_node: Node, parent_node: Node):
+        if child_node and not child_node.failed_state:
+            # Ensure the child is a deep copy, with its parent set properly
+            child_node.parent = parent_node
+            parent_node.child_nodes.append(child_node)
+
+            # Check if the child is a better state and recursively generate the tree
+            if (Actions.check_does_not_equal_prior_nodes(child_node) and
+                    Actions.calculate_similarity_to_goal_state(child_node, self.goal_node) >
+                    Actions.calculate_similarity_to_goal_state(parent_node, self.goal_node)):
+                if self.generate_tree(child_node):
+                    return True
+        else:
+            parent_node.failed_state = True
+            return False
 
     def determine_optimal_path(self):
 
@@ -50,6 +76,8 @@ class Tree:
         # if not backtrack to last node
         pass
 
-    def print_tree(self):
-        # print the tree
-        pass
+    def print_tree(self, node: Node, depth=0):
+        indent = '  ' * depth
+        print(f"{indent}Node: {node.table_state} (Solved: {node.solved}, Failed: {node.failed_state}, Score: {node.similarity})")
+        for child in node.child_nodes:
+            self.print_tree(child, depth + 1)
