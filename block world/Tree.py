@@ -88,8 +88,6 @@ class Tree:
                 elif current_depth == best_depth:
                     # If depths are equal use the currently saved one
                     pass
-
-            # Add its children to the queue for further exploration, with their depth increased by 1
             for child in current_node.child_nodes:
                 queue.append((child, current_depth + 1))
         return self.get_path_moves(best_solved_node)
