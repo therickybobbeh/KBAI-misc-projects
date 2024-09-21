@@ -6,9 +6,6 @@ class Actions:
     def __init__(self):
         pass
 
-    #TODO: fix the references to the child nodes and parent nodes
-    # fix the logic as well for poping and placing
-
     # start actions block
     @staticmethod
     def pop_off_top_and_place_on_stack(node: Node, from_stack_index: int, to_stack_index: int) -> Node:
@@ -18,10 +15,14 @@ class Actions:
         element = new_state[from_stack_index].pop()
         # Remove the empty stacks by taking index and filtering at end
         if len(new_state[from_stack_index]) == 0:
-            new_state[from_stack_index] = []  # Keep the index but empty the stack
+            new_state[from_stack_index] = []
+            move_made = ("Table", f"{element}")
+        else:
+            move_made = (f"{element}", f"{new_state[to_stack_index][-1]}")
+        # Keep the index but empty the stack
         new_state[to_stack_index].append(element)
         new_state = [stack for stack in new_state if stack]
-        return Node(parent=node, table_state=new_state)
+        return Node(parent=node, table_state=new_state, last_move_made=move_made)
 
     @staticmethod
     def pop_off_top_and_place_on_table(node: Node, from_stack_index: int) -> Node:
@@ -34,7 +35,8 @@ class Actions:
             new_state[from_stack_index] = []
         new_state.append([element])
         new_state = [stack for stack in new_state if stack]
-        return Node(parent=node, table_state=new_state)
+        move_made = (f"{element}","Table")
+        return Node(parent=node, table_state=new_state, last_move_made=move_made)
 
     #end actions
 

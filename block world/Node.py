@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Tuple
 
 class Node:
     def __init__(self, parent: Union['Node', None] = None,
@@ -6,13 +6,15 @@ class Node:
                  failed_state: bool = False,
                  solved: bool = False,
                  table_state: Union[list[list[str]], None] = None,
-                 similarity: int = 0
+                 similarity: int = 0,
+                 last_move_made: Union[Tuple[str,str], None] = None
                 ):
         self.parent: Node = parent
         self.child_nodes: list[Node] = child if child is not None else []
         self.failed_state: bool = failed_state
         self.solved: bool = solved
         self.similarity: int = similarity
+        self.last_move_made: Union[Tuple[str, str], None] = last_move_made
 
 
 
@@ -32,16 +34,9 @@ class Node:
 
         # Sort each sublist and the parent list for comparison
         # Uses O(n log n)
-        # begin credit blok, used this for inspiration
+        # begin credit block, used this for inspiration
         sorted_self = sorted([sorted(sublist) for sublist in self.table_state])
         sorted_other = sorted([sorted(sublist) for sublist in other.table_state])
         # https://stackoverflow.com/questions/7828867/how-to-efficiently-compare-two-unordered-lists-not-sets
         # end credit block
         return sorted_self == sorted_other
-
-
-
-
-
-
-

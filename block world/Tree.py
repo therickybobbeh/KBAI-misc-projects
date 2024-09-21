@@ -1,6 +1,7 @@
 from Node import Node
 from Actions import Actions
 from copy import deepcopy
+from collections import deque
 
 class Tree:
 
@@ -15,21 +16,21 @@ class Tree:
         self.root_node.similarity = Actions.calculate_similarity_to_goal_state(self.root_node, self.goal_node)
         ## max depth on the trees should be the number of the elements in the list times 2 plus some number
         self.current_node: Node = root_node
-        # may not need
         self.goal_node.similarity = count = sum(len(sublist) for sublist in self.goal_node.table_state)
 
 
     def solve(self):
         self.generate_tree(self.root_node)
         self.print_tree(self.root_node)
-        return self.determine_optimal_path()
+        return self.determine_optimal_path(self.root_node)
 
 
     # this only generates the tree, and sets the failed states appropriately
+    # false indicates the node should be explored no more and move back up a node
     def generate_tree(self, node: Node):
         if node == self.goal_node:
             node.solved = True
-            return True
+            return False
 
         for selected_stack_index, stack in enumerate(node.table_state):
             for other_stack_index in range(len(node.table_state)):
@@ -69,22 +70,46 @@ class Tree:
             parent_node.failed_state = True
             return False
 
-    def determine_optimal_path(self):
+    def determine_optimal_path(self, node: Node):
+        # The BFS algorithm used here is an adaptation of the example used on this page
+        # https://codereview.stackexchange.com/questions/135156/bfs-implementation-in-python-3
+        queue = deque([(node, 0)])
+        best_solved_node = None
+        best_depth = float('inf')
+        # Perform BFS until the queue is empty
+        while queue:
+            # Dequeue the next node and its depth from the front of the queue
+            current_node, current_depth = queue.popleft()
+            # Check if this node is solved
+            if current_node.solved:
+                if best_solved_node is None or current_depth < best_depth:
+                    best_solved_node = current_node
+                    best_depth = current_depth
+                elif current_depth == best_depth:
+                    # If depths are equal use the currently saved one
+                    pass
 
-        # BFS
+            # Add its children to the queue for further exploration, with their depth increased by 1
+            for child in current_node.child_nodes:
+                queue.append((child, current_depth + 1))
+        return self.get_path_moves(best_solved_node)
 
-        # create some kind way to record the last path taken to a solved state. have a count that gets replaced
-        # when it finds something with a smaller count
+    @staticmethod
+    def get_path_moves(node: Node):
+        # Reconstruct the path by traversing from the solved node back to the root
+        path_to_root = []
+        current_node = node
+        while current_node is not None:
+            if current_node.last_move_made is not None:
+                path_to_root.append(current_node.last_move_made)
+            current_node = current_node.parent
+        return path_to_root[::-1]
 
-        # should go down from root and end when it exhaust all the nodes on the last child of the parent
-
-        # first look at root, look for what children of its have solved = false
-        # if it finds failed state = true then go down that path
-        # if not backtrack to last node
-        pass
 
     def print_tree(self, node: Node, depth=0):
         indent = '  ' * depth
-        print(f"{indent}Node: {node.table_state} (Solved: {node.solved}, Failed: {node.failed_state}, Score: {node.similarity})")
+        print(f"{indent}Node: {node.table_state} (Solved: {node.solved},"
+              f" Failed: {node.failed_state}, Score: {node.similarity}),"
+              f"Move made to get to state: {node.last_move_made}")
         for child in node.child_nodes:
             self.print_tree(child, depth + 1)
