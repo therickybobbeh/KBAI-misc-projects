@@ -28,7 +28,6 @@ class Node:
         # override the equals to check to just look for the lists
     def __eq__(self, other):
         if self.table_state is None or other.table_state is None:
-            # TODO: check may not need
             return self.table_state == other.table_state
 
         # Sort each sublist and the parent list for comparison

@@ -12,20 +12,28 @@ class Actions:
     # start actions block
     @staticmethod
     def pop_off_top_and_place_on_stack(node: Node, from_stack_index: int, to_stack_index: int) -> Node:
-        if not node.table_state[from_stack_index]:
-            return None
+        # if not node.table_state[from_stack_index]:
+        #     return None
         new_state = deepcopy(node.table_state)
         element = new_state[from_stack_index].pop()
+        # Remove the empty stacks by taking index and filtering at end
+        if len(new_state[from_stack_index]) == 0:
+            new_state[from_stack_index] = []  # Keep the index but empty the stack
         new_state[to_stack_index].append(element)
+        new_state = [stack for stack in new_state if stack]
         return Node(parent=node, table_state=new_state)
 
     @staticmethod
     def pop_off_top_and_place_on_table(node: Node, from_stack_index: int) -> Node:
-        if not node.table_state[from_stack_index]:
-            return None
+        # if not node.table_state[from_stack_index]:
+        #     return None
         new_state = deepcopy(node.table_state)
         element = new_state[from_stack_index].pop()
+        # Remove the empty stacks by taking index and filtering at end
+        if len(new_state[from_stack_index]) == 0:
+            new_state[from_stack_index] = []
         new_state.append([element])
+        new_state = [stack for stack in new_state if stack]
         return Node(parent=node, table_state=new_state)
 
     #end actions
@@ -38,13 +46,11 @@ class Actions:
         # check the parent until there is no parent
         while current_node is not None:
             if node == current_node:
+                node.failed_state = True
                 return False
             current_node = current_node.parent
         return True
 
-
-
-    # TODO: may need something to make sure it doesnt try to do some stuff with blocks of 1 stack
 
     # end rules block
 
@@ -53,7 +59,6 @@ class Actions:
         total_similarity = 0
         initial_state = node.table_state
         goal_state_list = goal_state.table_state
-
         # Loop through each sublist in the initial state
         for init_sublist in initial_state:
             max_similarity = 0

@@ -35,29 +35,36 @@ class Tree:
             for other_stack_index in range(len(node.table_state)):
                 if selected_stack_index != other_stack_index:
                     child_node = Actions.pop_off_top_and_place_on_stack(node, selected_stack_index, other_stack_index)
-                    if self.check_child_node_after_action(child_node, node):
+                    # node.child_nodes.append(child_node)
+                    if self.check_child_node_after_action(child_node, node, 1):
                         return True
 
             # Move top block to the table
             child_node = Actions.pop_off_top_and_place_on_table(node, selected_stack_index)
-            if self.check_child_node_after_action(child_node, node):
+            if self.check_child_node_after_action(child_node, node, 2):
                 return True
 
         node.failed_state = True
         return False
 
-    def check_child_node_after_action(self, child_node: Node, parent_node: Node):
+    def check_child_node_after_action(self, child_node: Node, parent_node: Node, case: int):
         if child_node and not child_node.failed_state:
             # Ensure the child is a deep copy, with its parent set properly
             child_node.parent = parent_node
+            child_node.similarity = Actions.calculate_similarity_to_goal_state(child_node, self.goal_node)
             parent_node.child_nodes.append(child_node)
-
             # Check if the child is a better state and recursively generate the tree
-            if (Actions.check_does_not_equal_prior_nodes(child_node) and
-                    Actions.calculate_similarity_to_goal_state(child_node, self.goal_node) >
-                    Actions.calculate_similarity_to_goal_state(parent_node, self.goal_node)):
-                if self.generate_tree(child_node):
-                    return True
+            if Actions.check_does_not_equal_prior_nodes(child_node):
+                # check for if its comparing on table move or stack on move, 1 for stack, 2 for table
+                if case == 1:
+                    if child_node.similarity > parent_node.similarity:
+                        if self.generate_tree(child_node):
+                            return True
+                if case == 2:
+                    if child_node.similarity >= parent_node.similarity:
+                        if self.generate_tree(child_node):
+                            return True
+            return False
         else:
             parent_node.failed_state = True
             return False
