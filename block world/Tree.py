@@ -2,6 +2,7 @@ from Node import Node
 from Actions import Actions
 from copy import deepcopy
 from collections import deque
+import time
 
 class Tree:
 
@@ -28,6 +29,10 @@ class Tree:
     # this only generates the tree, and sets the failed states appropriately
     # false indicates the node should be explored no more and move back up a node
     def generate_tree(self, node: Node):
+        # this time function was an adaptation of https://stackoverflow.com/a/24305739
+        start_time = time.time()
+        timeout = 40  # seconds
+
         if node == self.goal_node:
             node.solved = True
             return False
@@ -36,14 +41,16 @@ class Tree:
             for other_stack_index in range(len(node.table_state)):
                 if selected_stack_index != other_stack_index:
                     child_node = Actions.pop_off_top_and_place_on_stack(node, selected_stack_index, other_stack_index)
-                    # node.child_nodes.append(child_node)
                     if self.check_child_node_after_action(child_node, node, 1):
                         return True
-
+                if time.time() - start_time > timeout:
+                    return []  # Return an empty list if timeout is reached
             # Move top block to the table
             child_node = Actions.pop_off_top_and_place_on_table(node, selected_stack_index)
             if self.check_child_node_after_action(child_node, node, 2):
                 return True
+            if time.time() - start_time > timeout:
+                return []  # Return an empty list if timeout is reached
 
         node.failed_state = True
         return False
@@ -90,6 +97,9 @@ class Tree:
                     pass
             for child in current_node.child_nodes:
                 queue.append((child, current_depth + 1))
+
+        if best_solved_node is None:
+            return []
         return self.get_path_moves(best_solved_node)
 
     @staticmethod
