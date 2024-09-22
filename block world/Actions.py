@@ -9,8 +9,6 @@ class Actions:
     # start actions block
     @staticmethod
     def pop_off_top_and_place_on_stack(node: Node, from_stack_index: int, to_stack_index: int) -> Node:
-        # if not node.table_state[from_stack_index]:
-        #     return None
         new_state = deepcopy(node.table_state)
         element = new_state[from_stack_index].pop()
         # Remove the empty stacks by taking index and filtering at end
@@ -26,8 +24,6 @@ class Actions:
 
     @staticmethod
     def pop_off_top_and_place_on_table(node: Node, from_stack_index: int) -> Node:
-        # if not node.table_state[from_stack_index]:
-        #     return None
         new_state = deepcopy(node.table_state)
         element = new_state[from_stack_index].pop()
         # Remove the empty stacks by taking index and filtering at end

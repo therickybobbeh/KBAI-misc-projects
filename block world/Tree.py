@@ -21,7 +21,7 @@ class Tree:
 
     def solve(self):
         self.generate_tree(self.root_node)
-        self.print_tree(self.root_node)
+        # self.print_tree(self.root_node)
         return self.determine_optimal_path(self.root_node)
 
 
